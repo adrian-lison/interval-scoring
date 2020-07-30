@@ -134,7 +134,7 @@ def weighted_interval_score(
     (2) Bracher, J., Ray, E. L., Gneiting, T., & Reich, N. G. (2020). Evaluating epidemic forecasts in an interval format. arXiv preprint arXiv:2005.12881.
     """
     if weights is None:
-        weights = alphas
+        weights = np.array(alphas)/2
 
     def weigh_scores(tuple_in, weight):
         return tuple_in[0] * weight, tuple_in[1] * weight, tuple_in[2] * weight
@@ -203,7 +203,7 @@ def weighted_interval_score_fast(
     (2) Bracher, J., Ray, E. L., Gneiting, T., & Reich, N. G. (2020). Evaluating epidemic forecasts in an interval format. arXiv preprint arXiv:2005.12881.
     """
     if weights is None:
-        weights = alphas
+        weights = np.array(alphas)/2
 
     if not all(alphas[i] <= alphas[i + 1] for i in range(len(alphas) - 1)):
         raise ValueError("Alpha values must be sorted in ascending order.")
