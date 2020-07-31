@@ -6,7 +6,7 @@ This repository contains python implementations of scoring rules for forecasts p
 - **Outside Interval Count**: Simple count of observations outside the prediction interval.
 - **Interval Consistency Score**: Adapted version of the interval score which compares consecutive forecasts for the same point in time and evaluates their consistency (see below).
 
-Credits for the scoring rules (interval score and weighted interval score) go to the corresponding authors.
+All credits for the interval score and weighted interval score go to the corresponding authors.
 
 For exemplary uses of the scoring functions, see [here](#example). For the docstring of the functions, see [here](#docs).
 
@@ -224,7 +224,7 @@ print(scoring.interval_consistency_score(lower_old=quantile_dict_test[0.1],upper
 
 ## <a id='docs'></a>Function Docs
 
-### Interval Score
+### interval_score
     Compute interval scores for an array of observations and predicted intervals.
     
     Either a dictionary with the respective (alpha/2) and (1-(alpha/2)) quantiles via q_dict needs to be specified or the quantiles need to be specified via q_left and q_right.
@@ -255,10 +255,10 @@ print(scoring.interval_consistency_score(lower_old=quantile_dict_test[0.1],upper
     calibration : array_like
         Calibration component of interval scores.
         
-### Weighted Interval Score
+### weighted_interval_score / weighted_interval_score_fast
     Compute weighted interval scores for an array of observations and a number of different predicted intervals.
     
-    This function implements the WIS-score (2). A dictionary with the respective (alpha/2)
+    This function implements the WIS-score. A dictionary with the respective (alpha/2)
     and (1-(alpha/2)) quantiles for all alpha levels given in `alphas` needs to be specified.
     
     Parameters
@@ -285,39 +285,32 @@ print(scoring.interval_consistency_score(lower_old=quantile_dict_test[0.1],upper
     calibration : array_like
         Calibration component of weighted interval scores.
         
-### Interval Consistency Score
-    Compute weighted interval scores for an array of observations and a number of different predicted intervals.
+### interval_consistency_score
+    Compute interval consistency scores for an old and a new interval.
     
-    This function implements the WIS-score (2). A dictionary with the respective (alpha/2)
-    and (1-(alpha/2)) quantiles for all alpha levels given in `alphas` needs to be specified.
-    
-    This is a more efficient implementation using array operations instead of repeated calls of `interval_score`.
+    Adapted variant of the interval score which measures the consistency of updated intervals over time.
+    Ideally, updated predicted intervals would always be within the previous estimates of the interval, yielding
+    a score of zero (best).
     
     Parameters
     ----------
-    observations : array_like
-        Ground truth observations.
-    alphas : iterable
-        Alpha levels for (1-alpha) intervals.
-    q_dict : dict
-        Dictionary with predicted quantiles for all instances in `observations`.
-    weights : iterable, optional
-        Corresponding weights for each interval. If `None`, `weights` is set to `alphas`, yielding the WIS^alpha-score.
-    percent: bool, optional
-        If `True`, score is scaled by absolute value of observations to yield a percentage error. Default is `False`.
+    lower_old : array_like
+        Previous lower interval boundary for all instances in `observations`.
+    upper_old : array_like, optional
+        Previous upper interval boundary for all instances in `observations`.
+    lower_new : array_like
+        New lower interval boundary for all instances in `observations`. Ideally higher than the previous boundary.
+    upper_new : array_like, optional
+        New upper interval boundary for all instances in `observations`. Ideally lower than the previous boundary.
     check_consistency: bool, optional
-        If `True`, quantiles in `q_dict` are checked for consistency. Default is `True`.
+        If interval boundaries are checked for consistency. Default is `True`.
         
     Returns
     -------
-    total : array_like
-        Total weighted interval scores.
-    sharpness : array_like
-        Sharpness component of weighted interval scores.
-    calibration : array_like
-        Calibration component of weighted interval scores.
+    scores : array_like
+        Interval consistency scores.
         
-### Outside Interval Count
+### outside_interval
     Indicate whether observations are outside a predicted interval for an array of observations and predicted intervals.
     
     Parameters
@@ -335,3 +328,8 @@ print(scoring.interval_consistency_score(lower_old=quantile_dict_test[0.1],upper
     -------
     Out : array_like
         Array of zeroes (False) and ones (True) counting the number of times observations where outside the interval.
+
+
+```python
+
+```
