@@ -1,4 +1,4 @@
-# Weighted Interval Score
+# Interval Scoring
 This repository contains python implementations of scoring rules for forecasts provided in a prediction interval format, for example when only quantiles of the predictive distribution are given.
 
 - **Interval Score** (Gneiting & Raftery, 2007): Scores sharpness and calibration of a specific prediction interval. 
